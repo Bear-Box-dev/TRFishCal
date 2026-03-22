@@ -45,7 +45,8 @@ if MENU == "คำนวณ EXP และการตกปลา":
     level_name = np.load("lvlExp.npy", allow_pickle=True)
     level_name = level_name[:,0]
     
-    level_color =  ["แดง ", "ส้ม ", "เหลือง ", "เขียว ", "ฟ้า ", "น้ำเงิน ", "ม่วง "]
+    # ต้องใช้ภาษาเกาหลีเพื่อให้ตรงกับฐานข้อมูลในไฟล์ lvlExp.npy
+    level_color =  ["빨강 ", "주황 ", "노랑 ", "초록 ", "파랑 ", "남색 ", "보라 "]
     level_shoe = [' '.join(level_name[i].split()[1:]) for i in range(0,len(level_name), 7)]
 
 
