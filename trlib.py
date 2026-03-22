@@ -37,7 +37,7 @@ def level_expected(current_level, goal_level, current_per, page_total):
 
     if use_goal_level: 
         exp_required = max(0, int(level_data[goal_level][2] - current_exp))
-    else: #목표레벨 안쓸경우
+    else: # กรณีไม่ใช้เลเวลเป้าหมาย
         exp_required = -1 
 
     if expected_level >= len(level_data) - 1:
@@ -61,45 +61,45 @@ def format_time(total_seconds):
 
     parts = []
     if days > 0:
-        parts.append(f"{days}일")
+        parts.append(f"{days} วัน")
     if hours > 0:
-        parts.append(f"{hours}시간")
+        parts.append(f"{hours} ชั่วโมง")
     if minutes > 0:
-        parts.append(f"{minutes}분")
+        parts.append(f"{minutes} นาที")
 
-    if not parts:  # 전부 0인 경우
-        return "0분"
+    if not parts:  # กรณีเป็น 0 ทั้งหมด
+        return "0 นาที"
     return " ".join(parts)
 
-@st.dialog("예약종료 사용법")
+@st.dialog("วิธีใช้คำสั่งตั้งเวลาปิดคอม")
 def schedule_info():
     st.markdown("""
-1. 키보드에서 `윈도우키` + `R` 키를 동시에 눌러 `실행` 창을 엽니다.  
-2. 입력 창에 명령어를 붙여넣고 `Enter` 키를 누르세요.  
+1. กดปุ่ม `Windows` + `R` พร้อมกันบนคีย์บอร์ดเพื่อเปิดหน้าต่าง `Run`  
+2. วางคำสั่งลงในช่องแล้วกดปุ่ม `Enter`  
 
-> ℹ️ 평균적인 시간이므로 실제 어획물과 차이가 있을 수 있습니다.  
-> 반드시 낚싯대와 낚시 프렌즈를 선택 후 예약 종료 명령어를 입력 바랍니다.  
+> ℹ️ นี่เป็นเวลาโดยเฉลี่ย อาจมีความคลาดเคลื่อนจากผลการตกปลาจริงได้  
+> กรุณาเลือกเบ็ดตกปลาและเพื่อนตกปลาก่อนนำคำสั่งไปใช้งาน  
 """)
 
 
-@st.dialog("피드백 작성")
+@st.dialog("ส่งข้อเสนอแนะ")
 def feedback_dialog():
-    st.markdown("추가할 아이템이나 그 외 피드백 주시면 감사하겠습니다.😊")
-    st.markdown("아이디어도 환영합니다!")
-    st.markdown("> ℹ️본 피드백은 IP 등 사용자의 어떠한 정보도 수집하지 않습니다.")
-    # name = st.text_input("닉네임 (적지 않으셔도 무방합니다.):") # 굳이 입력 받을 필요 없을 듯
-    name = "익명"
-    feedback = st.text_area("피드백을 작성해주세요.")
+    st.markdown("หากต้องการให้เพิ่มไอเทมหรือมีข้อเสนอแนะเพิ่มเติม สามารถแจ้งได้เลยครับ 😊")
+    st.markdown("ยินดีรับฟังทุกไอเดียครับ!")
+    st.markdown("> ℹ️ แบบฟอร์มนี้จะไม่เก็บข้อมูลส่วนตัวใดๆ ของผู้ใช้ เช่น IP Address")
+    # name = st.text_input("ชื่อเล่น (ไม่ระบุก็ได้):") # ไม่จำเป็นต้องรับข้อมูลชื่อ
+    name = "ไม่ระบุนาม"
+    feedback = st.text_area("กรุณาพิมพ์ข้อเสนอแนะของคุณ")
 
-    if st.button("제출"):
+    if st.button("ส่ง"):
         # if not name.strip():
-        #     # st.warning("이름을 입력해주세요.")
-        #     name = "익명" # 이름 입력받고 싶으면
+        #     # st.warning("กรุณากรอกชื่อ")
+        #     name = "ไม่ระบุนาม" # หากต้องการให้รับชื่อ
         if not feedback.strip():
-            st.warning("피드백을 입력해주세요.")
+            st.warning("กรุณากรอกข้อเสนอแนะ")
             return
         save_feedback(name, feedback)
-        st.success("피드백 감사합니다! 🎉")
+        st.success("ขอบคุณสำหรับข้อเสนอแนะครับ! 🎉")
         st.session_state.feedback_submitted = True
 
 def get_image_base64(file_path):
@@ -112,18 +112,18 @@ def get_price(bait, isCash):
     
 def get_total_text(count, price, isCash):
     if price == -1:
-        return "[추석 이벤트] 구매 불가"
+        return "[กิจกรรมเทศกาลชูซอก] ไม่สามารถซื้อได้"
     elif price == -2:
-        return "[획득 불가]"
+        return "[ไม่สามารถรับได้]"
     elif price == -3:
-        return "[한정 이벤트]"
+        return "[กิจกรรมจำกัดเวลา]"
     else:
         total = count * price
-        currency = "캐시" if isCash else "TR"
+        currency = "Cash" if isCash else "TR"
         return f"{total:,} {currency}"
 
 def render_bait_cards(baits, exp_required, fish_time, isCash=False):
-    cols = st.columns(2)  # 2열 생성
+    cols = st.columns(2)  # สร้าง 2 คอลัมน์
 
     for i, bait in enumerate(baits):
         count = math.ceil(exp_required / bait["exp"])
@@ -144,15 +144,15 @@ def render_bait_cards(baits, exp_required, fish_time, isCash=False):
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="padding:8px; width:50%;"><b>개수:</b></td>
-                        <td style="padding:8px;">{count:,}개</td>
+                        <td style="padding:8px; width:50%;"><b>จำนวน:</b></td>
+                        <td style="padding:8px;">{count:,} ตัว</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px;"><b>{'총 캐시:' if isCash else '총 TR:'}</b></td>
+                        <td style="padding:8px;"><b>{'รวม Cash:' if isCash else 'รวม TR:'}</b></td>
                         <td style="padding:8px;">{total_print}</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px;"><b>예상 시간:</b></td>
+                        <td style="padding:8px;"><b>เวลาที่คาดว่าจะใช้:</b></td>
                         <td style="padding:8px;">{format_time(total_seconds)}</td>
                     </tr>
                 </tbody>
@@ -167,15 +167,3 @@ def set_mode_xp_to_worms():
 def set_mode_worms_to_xp():
     st.session_state.mode = "worms_to_xp"
     st.session_state.selectExp = False
-
-
-
-
-
-
-
-
-
-
-
-
