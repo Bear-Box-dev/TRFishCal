@@ -18,25 +18,25 @@ import math
 
 
 st.set_page_config(
-    page_title="테일즈런너 종합계산기",
+    page_title="เครื่องมือคำนวณ Tales Runner แบบครบวงจร",
     page_icon="🎣"
 )
 
-st.sidebar.title("테일즈런너 유틸모음")
+st.sidebar.title("รวมเครื่องมือ Tales Runner")
 MENU = st.sidebar.radio(
-    "메뉴 선택 (추후 추가 예정)",
-    ["경험치 및 낚시 계산기", "경험치 ↔ 지렁이"],
-    index = 0 # 기본값
+    "เลือกเมนู (จะเพิ่มในภายหลัง)",
+    ["คำนวณ EXP และการตกปลา", "EXP ↔ เหยื่อตกปลา"],
+    index = 0 # ค่าเริ่มต้น
 )
-if MENU == "경험치 및 낚시 계산기":
-    if st.button("[ 업데이트 내역 (26-03-11) ]"):
+if MENU == "คำนวณ EXP และการตกปลา":
+    if st.button("[ รายละเอียดการอัปเดต (26-03-11) ]"):
         trU.update_info()
         
     col1, col2 = st.columns([3,1])
     with col1:
-        st.markdown(f"<div style='font-size: 25px; font-weight: bold; margin-top: 12px;'>레벨 경험치 계산", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size: 25px; font-weight: bold; margin-top: 12px;'>คำนวณ EXP เลเวล", unsafe_allow_html=True)
     with col2:
-        if st.button("피드백"):
+        if st.button("ฟีดแบ็ก"):
             tr.feedback_dialog()
     if st.session_state.get("feedback_submitted", False):
             st.session_state.feedback_submitted = False
@@ -45,14 +45,14 @@ if MENU == "경험치 및 낚시 계산기":
     level_name = np.load("lvlExp.npy", allow_pickle=True)
     level_name = level_name[:,0]
     
-    level_color =  ["빨강 ", "주황 ", "노랑 ", "초록 ", "파랑 ", "남색 ", "보라 "]
+    level_color =  ["แดง ", "ส้ม ", "เหลือง ", "เขียว ", "ฟ้า ", "น้ำเงิน ", "ม่วง "]
     level_shoe = [' '.join(level_name[i].split()[1:]) for i in range(0,len(level_name), 7)]
 
 
     cols = st.columns([1,1.5,1])
-    cur_color = cols[0].selectbox("현재 레벨", level_color, accept_new_options=False)
+    cur_color = cols[0].selectbox("เลเวลปัจจุบัน", level_color, accept_new_options=False)
     cur_shoe = cols[1].selectbox("", level_shoe, accept_new_options=False)
-    cur_per_str = cols[2].text_input("경험치 ( % )", value="0.0")
+    cur_per_str = cols[2].text_input("ค่าประสบการณ์ ( % )", value="0.0")
     
     select_cur_level = cur_color+cur_shoe
 
@@ -64,13 +64,13 @@ if MENU == "경험치 및 낚시 계산기":
         try:
             current_per = float(cur_per_str)
             if current_per >= 100:
-                    st.error("100 미만의 숫자를 입력해주세요.")
+                    st.error("กรุณากรอกตัวเลขที่น้อยกว่า 100")
                     current_per = 0.0
             elif current_per < 0:
-                    st.error("0 이상의 숫자를 입력해주세요.")
+                    st.error("กรุณากรอกตัวเลขที่มากกว่าหรือเท่ากับ 0")
                     current_per = 0.0
         except ValueError:
-            st.error("숫자를 입력해주세요.")
+            st.error("กรุณากรอกตัวเลข")
             current_per = 0.0
     
     st.markdown("""
@@ -94,26 +94,26 @@ if MENU == "경험치 및 낚시 계산기":
     
     cols = st.columns([1,1.5,1])
     
-    goal_color = cols[0].selectbox("목표 레벨", level_color, key="goal_color", accept_new_options=False)
+    goal_color = cols[0].selectbox("เลเวลเป้าหมาย", level_color, key="goal_color", accept_new_options=False)
     goal_shoe = cols[1].selectbox("", level_shoe, key="goal_shoes", accept_new_options=False)
     select_goal_level = goal_color+goal_shoe
     cols[2].markdown("")
     goal_level_index = (np.where(level_name == select_goal_level)[0][0])
     
     
-    use_fish_page = st.checkbox("낚시 페이지 계산", value=False)
+    use_fish_page = st.checkbox("คำนวณหน้าตกปลา", value=False)
     if use_fish_page:
         st.write(" ")
-        st.write("낚시 페이지 계산")
+        st.write("คำนวณหน้าตกปลา")
         cols = st.columns([1,1])
-        page1 = cols[0].number_input("페이지1 입력", min_value=0, value=0, step=1)
-        page2 = cols[1].number_input("페이지2 입력", min_value=0, value=0, step=1)
+        page1 = cols[0].number_input("กรอกหน้า 1", min_value=0, value=0, step=1)
+        page2 = cols[1].number_input("กรอกหน้า 2", min_value=0, value=0, step=1)
         cols2 = st.columns([1,1])
-        page3 = cols2[0].number_input("페이지3 입력", min_value=0, value=0, step=1)
-        page4 = cols2[1].number_input("페이지4 입력", min_value=0, value=0, step=1)
+        page3 = cols2[0].number_input("กรอกหน้า 3", min_value=0, value=0, step=1)
+        page4 = cols2[1].number_input("กรอกหน้า 4", min_value=0, value=0, step=1)
         cols3 = st.columns([1,1])
-        page5 = cols2[0].number_input("페이지5 입력", min_value=0, value=0, step=1)
-        page6 = cols2[1].number_input("페이지6 입력", min_value=0, value=0, step=1)
+        page5 = cols2[0].number_input("กรอกหน้า 5", min_value=0, value=0, step=1)
+        page6 = cols2[1].number_input("กรอกหน้า 6", min_value=0, value=0, step=1)
         total_page = page1+page2+page3+page4+page5+page6
     else:
         total_page = 0
@@ -125,7 +125,7 @@ if MENU == "경험치 및 낚시 계산기":
     if extra_exp != -1:
         barText = f"({extra_exp:,} EXP)"
     elif exp_required != -1: 
-        barText = f"{now_per:.2f}% ({exp_required:,} EXP 남음)"
+        barText = f"{now_per:.2f}% (เหลืออีก {exp_required:,} EXP)"
         if (use_goal_level) and (exp_required == 0): barText = f"{now_per:.2f}%"
     else: barText = f"{now_per:.2f}%"
     
@@ -141,7 +141,7 @@ if MENU == "경험치 및 낚시 계산기":
     </div>
     """
 
-    #이미지 출력 위함
+    # สำหรับแสดงรูปภาพ
 
     image_path = f"./level/{expected_level}.png"
     img_base64 = tr.get_image_base64(image_path)
@@ -149,7 +149,7 @@ if MENU == "경험치 및 낚시 계산기":
     st.markdown(
         f"""
         <div style='font-size: 18px; font-weight: bold; margin-top: 12px; display: flex; align-items: center;'>
-            예상 레벨 :
+            เลเวลที่คาดหวัง :
             <img src='data:image/png;base64,{img_base64}' style='height: 1.1em; margin: 0 5px;'/>
             <span style='font-size: 14px; font-weight: bold;'>{level_name[expected_level]}</span>
         </div>
@@ -159,15 +159,15 @@ if MENU == "경험치 및 낚시 계산기":
     st.markdown(bar_html, unsafe_allow_html=True)
     st.markdown("---")
 
-    st.markdown(f"<div style='font-size: 25px; font-weight: bold; margin-top: 12px;'>낚시 시간 계산", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size: 25px; font-weight: bold; margin-top: 12px;'>คำนวณเวลาตกปลา", unsafe_allow_html=True)
     
     st.write(" ")
-    premium_storage = st.checkbox("프리미엄 티켓", value=False)
-    ability_storage = st.checkbox("[어빌리티] 휴대용 살림망", value=False)
+    premium_storage = st.checkbox("ตั๋วพรีเมียม", value=False)
+    ability_storage = st.checkbox("[ความสามารถ] กระชังตกปลาแบบพกพา", value=False)
     cols = st.columns(2)
-    rod = cols[0].selectbox("낚싯대 종류 (가나다순)", ORDERED_ROD_KEYS, index=0)
+    rod = cols[0].selectbox("ประเภทเบ็ดตกปลา (เรียงตามตัวอักษร)", ORDERED_ROD_KEYS, index=0)
 
-    friend = cols[1].selectbox("낚시 프렌즈 (가나다순)", ORDERED_FRIENDS_KEYS, index=0)
+    friend = cols[1].selectbox("เพื่อนตกปลา (เรียงตามตัวอักษร)", ORDERED_FRIENDS_KEYS, index=0)
     min_default, max_default, storage_default = FISHING_RODS[rod]
     f_min, f_max, f_storage = FISHING_FRIENDS[friend]
     
@@ -177,8 +177,8 @@ if MENU == "경험치 및 낚시 계산기":
     
     
     cols = st.columns(2)
-    min_fish_time = cols[0].number_input("낚시 최소시간", min_value=0, value=min_default, step=1)
-    max_fish_time = cols[1].number_input("낚시 최대시간", min_value=0, value=max_default, step=1)
+    min_fish_time = cols[0].number_input("เวลาตกปลาขั้นต่ำ", min_value=0, value=min_default, step=1)
+    max_fish_time = cols[1].number_input("เวลาตกปลาสูงสุด", min_value=0, value=max_default, step=1)
     fish_time = [min_fish_time, max_fish_time]
     if premium_storage: storage_default += 300
     else: storage_default += 150
@@ -186,34 +186,34 @@ if MENU == "경험치 및 낚시 계산기":
     if ability_storage: storage_default += 5
 
 
-    fish_storage = st.number_input("최대 살림망", min_value=0, value=storage_default, step=1)
+    fish_storage = st.number_input("ความจุกระชังสูงสุด", min_value=0, value=storage_default, step=1)
     
     f_average_sec = (min_fish_time+max_fish_time)/2
 
-    st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>한 마리 당 약 {f_average_sec:.1f}초</div>", unsafe_allow_html=True)
-    st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>최대 살림망 까지 약 {tr.format_time(f_average_sec*fish_storage)}</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>ประมาณ {f_average_sec:.1f} วินาที ต่อตัว</div>", unsafe_allow_html=True)
+    st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>ใช้เวลาประมาณ {tr.format_time(f_average_sec*fish_storage)} จนกระชังเต็ม</div>", unsafe_allow_html=True)
 
 
-    if rod == '테런 낚싯대' or rod == "달토끼 낚싯대":
+    if rod == '테런 낚싯대' or rod == "달토끼 낚싯대": # หากต้องการให้แปลชื่อเบ็ดในเงื่อนไขด้วย กรุณาแจ้งเพิ่มเติมได้ครับ
         st.markdown(f"""
             <div style="font-size: 15px; font-weight: bold; margin-top: 12px; margin-bottom: 8px;">
-                {rod} 시간별 정보
+                ข้อมูลตามเวลาของ {rod}
             </div>
             <table style="width:100%; border-collapse: collapse; font-size:13px; line-height:1.6; margin-bottom:16px; border: 1px solid #ccc;">
                 <thead>
                     <tr>
-                        <th style="text-align:left; padding:8px;">시간</th>
-                        <th style="text-align:left; padding:8px;">예상 획득량</th>
+                        <th style="text-align:left; padding:8px;">เวลา</th>
+                        <th style="text-align:left; padding:8px;">จำนวนที่คาดว่าจะได้รับ</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td style="padding:8px;">30분</td>
-                        <td style="padding:8px;">약 {int((30*60)//f_average_sec)}마리</td>
+                        <td style="padding:8px;">30 นาที</td>
+                        <td style="padding:8px;">ประมาณ {int((30*60)//f_average_sec)} ตัว</td>
                     </tr>
                     <tr>
-                        <td style="padding:8px;">1시간</td>
-                        <td style="padding:8px;">약 {int((60*60)//f_average_sec)}마리</td>
+                        <td style="padding:8px;">1 ชั่วโมง</td>
+                        <td style="padding:8px;">ประมาณ {int((60*60)//f_average_sec)} ตัว</td>
                     </tr>
                 </tbody>
             </table>
@@ -221,90 +221,57 @@ if MENU == "경험치 및 낚시 계산기":
         
     
     if round((f_average_sec*fish_storage)) != 0 : 
-        st.markdown(f"<div style='font-size: 15px; font-weight: bold; margin-top: 12px;'>컴퓨터 예약 종료 명령어 : shutdown -s -t {round((f_average_sec)*fish_storage)}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div style='font-size: 15px; font-weight: bold; margin-top: 12px;'>예약 취소 명령어 : shutdown -a</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size: 15px; font-weight: bold; margin-top: 12px;'>คำสั่งตั้งเวลาปิดคอมพิวเตอร์ : shutdown -s -t {round((f_average_sec)*fish_storage)}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size: 15px; font-weight: bold; margin-top: 12px;'>คำสั่งยกเลิกการตั้งเวลา : shutdown -a</div>", unsafe_allow_html=True)
     
     st.write(" ")
-    if st.button("[컴퓨터 예약 종료 설명 보기]"):
+    if st.button("[ดูคำแนะนำการตั้งเวลาปิดคอมพิวเตอร์]"):
         tr.schedule_info()
     
     st.markdown("---")
     
     if use_goal_level:
-        st.markdown("#### 목표 레벨에 필요한 지렁이 정보")
+        st.markdown("#### ข้อมูลเหยื่อตกปลาที่ต้องใช้สำหรับเลเวลเป้าหมาย")
     
-        st.markdown("##### 일반 지렁이")
+        st.markdown("##### เหยื่อธรรมดา")
         tr.render_bait_cards(T_BAITS, exp_required, fish_time, isCash=False)
     
-        st.markdown("##### 캐시 지렁이")
+        st.markdown("##### เหยื่อแคช")
         tr.render_bait_cards(C_BAITS, exp_required, fish_time, isCash=True)
         
-elif MENU == "경험치 ↔ 지렁이":
+elif MENU == "EXP ↔ เหยื่อตกปลา":
 
     
     all_baits = T_BAITS + C_BAITS
     bait_names = [bait["name"] for bait in all_baits]
-    selected_name2 = st.selectbox("지렁이를 선택하세요", bait_names)
+    selected_name2 = st.selectbox("เลือกเหยื่อตกปลา", bait_names)
     
     selected_bait = next(b for b in all_baits if b["name"] == selected_name2)
     selected_exp = selected_bait["exp"]
 
-    st.checkbox("얻고 싶은 경험치 → 필요한 지렁이", key="selectExp", on_change=tr.set_mode_xp_to_worms)
-    st.checkbox("지렁이 수 → 얻는 경험치 계산", key="selectCount", on_change=tr.set_mode_worms_to_xp)
+    st.checkbox("EXP ที่ต้องการ → จำนวนเหยื่อที่ต้องใช้", key="selectExp", on_change=tr.set_mode_xp_to_worms)
+    st.checkbox("จำนวนเหยื่อ → คำนวณ EXP ที่ได้รับ", key="selectCount", on_change=tr.set_mode_worms_to_xp)
 
     if not st.session_state.selectExp and not st.session_state.selectCount:    st.session_state.mode = None
     mode = st.session_state.get("mode", None)
 
     if mode == "xp_to_worms":
-        st.subheader("경험치 입력 → 필요한 지렁이 수 계산")
+        st.subheader("กรอก EXP → คำนวณจำนวนเหยื่อที่ต้องใช้")
     
-        target_xp = st.number_input("목표 경험치 입력", min_value=0, value=0, step=1)
+        target_xp = st.number_input("กรอก EXP เป้าหมาย", min_value=0, value=0, step=1)
 
         if target_xp > 0:
-            st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>{selected_name2} : 약 {math.ceil(target_xp/selected_exp):,}개가 필요합니다.</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>{selected_name2} : ต้องใช้ประมาณ {math.ceil(target_xp/selected_exp):,} ตัว</div>", unsafe_allow_html=True)
             
 
     elif mode == "worms_to_xp":
-        st.subheader("지렁이 수 → 얻는 총 경험치 계산")
+        st.subheader("จำนวนเหยื่อ → คำนวณ EXP รวมที่ได้รับ")
         
-        target_count = st.number_input("지렁이 개수 입력", min_value=0, value=0, step=1)
+        target_count = st.number_input("กรอกจำนวนเหยื่อ", min_value=0, value=0, step=1)
         
         if target_count > 0:
-            st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>{selected_name2} {target_count}개는 약 {round(selected_exp * target_count):,}EXP 입니다.</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size: 20px; font-weight: bold; margin-top: 12px;'>{selected_name2} จำนวน {target_count} ตัว จะได้ประมาณ {round(selected_exp * target_count):,} EXP</div>", unsafe_allow_html=True)
 
     
     else:
-        st.info("계산 방식을 하나 선택해주세요.")
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        st.info("กรุณาเลือกวิธีการคำนวณ")
